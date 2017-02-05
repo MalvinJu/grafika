@@ -176,17 +176,32 @@ void drawCircle (int radius, Point P, Color C) {
     }
 }
 
-void floodFill8Seed (Point P, Color cBorder, Color cNew) {
-	if (!cBorder.isSame(screen.getColor(P.getY(), P.getX()))) {
-		screen.setColor(P.getY(), P.getX(), cNew);
+/*
+x : kordinat x
+y : kordinat y
+cBorder : warna border poilgin
+cNew : fill polygon
 
-	    floodFill8(P.getX() + 1, p.getY()    , cBorder, cNew);
-	    floodFill8(P.getX() - 1, p.getY()    , cBorder, cNew);
-	    floodFill8(P.getX()    , p.getY() + 1, cBorder, cNew);
-	    floodFill8(P.getX()    , p.getY() - 1, cBorder, cNew);
-	    floodFill8(P.getX() + 1, p.getY() + 1, cBorder, cNew);
-	    floodFill8(P.getX() - 1, p.getY() - 1, cBorder, cNew);
-	    floodFill8(P.getX() - 1, p.getY() + 1, cBorder, cNew);
-	    floodFill8(P.getX() + 1, p.getY() - 1, cBorder, cNew);
-  }
+x dan y kordinat di dalam poligon
+Still Segmentation Fault
+*/
+void floodFill4Seed (int x, int y, Color cBorder, Color cNew) {
+	
+	if (cBorder.isSame(screen.getColor(y, x))) {
+		return;
+	}
+	else if (cNew.isSame(screen.getColor(y, x))) {
+		return;
+	}
+	else if ((x>screen.getWidth() || x<0) || (y>screen.getHeight() || y<0)) {
+		return;
+	}
+	else {
+		screen.setColor(y, x, cNew);
+		 
+	    floodFill4Seed(x    , y + 1, cBorder, cNew);
+	    floodFill4Seed(x    , y - 1, cBorder, cNew);
+	    floodFill4Seed(x + 1, y    , cBorder, cNew);
+	    floodFill4Seed(x - 1, y    , cBorder, cNew);
+	}  
 }
