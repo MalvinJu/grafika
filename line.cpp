@@ -75,8 +75,8 @@ void plotSlopNegativeLine (Point P1, Point P2, Color C) {
 	}
 	else {
 		p = 2*dX - dY;
-		i = P2.x;
-		j = P2.y;
+		i = P2.getX();
+		j = P2.getY();
 
 		for (y=P2.getY(); y<=P1.getY(); y++) {
 			screen.setColor(y, i, C);
@@ -100,7 +100,7 @@ void plotVerticalLine (Point P1, Point P2, Color C) {
 		P1.swapPoint(&P2);	
 	}
 	
-	for(j = P1.y ; j <= P2.y; j++) {
+	for(j = P1.getY() ; j <= P2.getY(); j++) {
 		screen.setColor(j, P1.getX(), C);
 	}
 }
@@ -121,6 +121,10 @@ void drawBresenhamLine (Point P1, Point P2, Color C) {
 	}
 }
 
+/*
+*P : Array of Point
+n : Array size
+*/
 void drawPolyline (int n, Point *P, Color C) {
 	int i;
 	for (i = 0;i < n-1;i++) {
@@ -128,6 +132,10 @@ void drawPolyline (int n, Point *P, Color C) {
 	}
 }
 
+/*
+*P : Array of Point
+n : Array size
+*/
 void drawPolygon (int n, Point *P, Color C) {
 	drawBresenhamLine(P[n-1], P[0], C);
 	drawPolyline(n, P, C);
