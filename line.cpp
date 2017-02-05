@@ -175,3 +175,18 @@ void drawCircle (int radius, Point P, Color C) {
         plot8pixel(P, p, q, C);
     }
 }
+
+void floodFill8Seed (Point P, Color cBorder, Color cNew) {
+	if (!cBorder.isSame(screen.getColor(P.getY(), P.getX()))) {
+		screen.setColor(P.getY(), P.getX(), cNew);
+
+	    floodFill8(P.getX() + 1, p.getY()    , cBorder, cNew);
+	    floodFill8(P.getX() - 1, p.getY()    , cBorder, cNew);
+	    floodFill8(P.getX()    , p.getY() + 1, cBorder, cNew);
+	    floodFill8(P.getX()    , p.getY() - 1, cBorder, cNew);
+	    floodFill8(P.getX() + 1, p.getY() + 1, cBorder, cNew);
+	    floodFill8(P.getX() - 1, p.getY() - 1, cBorder, cNew);
+	    floodFill8(P.getX() - 1, p.getY() + 1, cBorder, cNew);
+	    floodFill8(P.getX() + 1, p.getY() - 1, cBorder, cNew);
+  }
+}

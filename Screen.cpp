@@ -27,6 +27,7 @@ Color Screen::getColor(int r, int c){
 	int blue = *(fbp + location + 2);
 	return Color(red,green,blue);
 }
+
 void Screen::setColor(int r, int c, int red, int green, int blue){
 	int location = (c+vinfo.xoffset) * (vinfo.bits_per_pixel/8) + (r+vinfo.yoffset) * finfo.line_length;
 	*(fbp + location) =red;  

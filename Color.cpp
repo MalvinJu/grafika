@@ -22,5 +22,12 @@ int Color::getGreen(){
 int Color::getBlue(){
 	return Blue;
 }
-
+Boolean Color::isSame(color C) {
+	if ((C.getRed() == Red) && (C.getGreen() == Green) && (C.getBlue() == Blue)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 

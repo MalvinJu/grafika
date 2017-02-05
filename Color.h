@@ -11,7 +11,7 @@ public:
 	int getRed();
 	int getGreen();
 	int getBlue();
-
+	Boolean isSame(Color C);
 
 private:
 	int Red;
