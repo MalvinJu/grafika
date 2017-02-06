@@ -4,8 +4,14 @@
 #include <iostream>
 using namespace std;
 
+
+//global
 Screen screen;
+
 Color white(255,255,255);
+Color navy(0,0,128);
+Color skyblue(135,206,235);
+Color dodgerblue(30,144,255);
 
 void plotSlopPositiveLine (Point P1, Point P2, Color C) {
 	int dX, dY, p;
@@ -167,11 +173,11 @@ void drawCircle (int radius, Point P, Color C) {
     while (p < q) {
         p++;
         if (d<0) {
-            d = d + 4*p + 6;
+            d = d + 2*p + 1;
         }
         else {
             q--;
-            d = d + 4*(p-q) + 10;
+            d = d + 2*(p-q) + 1;
         }
 
         plot8pixel(P, p, q, C);
@@ -211,10 +217,13 @@ void drawPlane (Point start){
 	int posx = start.getX();
     int posy = start.getY();
     int nPoint = 58;
+    int nColor = 3;
     
     int newX, newY;
     
     Point *arrPoint = new Point[58];
+    Point *arrColor = new Point[3];
+    
     //tail 10
     arrPoint[0].setPoint(0,2); arrPoint[1].setPoint(2,2); 
     arrPoint[2].setPoint(2,2); arrPoint[3].setPoint(5,6); 
@@ -258,39 +267,64 @@ void drawPlane (Point start){
 	Point p;//lingkaran
 	p.setPoint(19,13);
 	
+	//set point untuk Color
+	//tail
+	arrColor[0].setPoint(2,5);
+	arrColor[1].setPoint(5,9);
+	arrColor[2].setPoint(13,5);
+	
 	//scale
     int scaleFactor = 10;
+    //1. pesawat
     for(int i = 0; i<nPoint; i++){
 		newX = arrPoint[i].getX() * scaleFactor;
 		newY = arrPoint[i].getY() * scaleFactor;
 		arrPoint[i].setPoint(newX, newY);
 	}
+	//2. roda
 	newX = p.getX() * scaleFactor;
 	newY = p.getY() * scaleFactor;
 	p.setPoint(newX, newY);
 	
+	//3. color
+	for(int i = 0; i<nColor; i++){
+		newX = arrColor[i].getX() * scaleFactor;
+		newY = arrColor[i].getY() * scaleFactor;
+		arrColor[i].setPoint(newX,newY);
+	}
+	
 	//position
+	//1. pesawat
 	for (int i = 0; i<nPoint; i++){
 		newX = arrPoint[i].getX() + posx;
 		newY = arrPoint[i].getY() + posy;		
 		arrPoint[i].setPoint(newX,newY);
 	}	
+	//2. roda
 	newX = p.getX() + posx;
 	newY = p.getY() + posy;
 	p.setPoint(newX, newY);
 	
+	//3. color
+	for(int i = 0; i<nColor; i++){
+		newX = arrColor[i].getX() + posx;
+		newY = arrColor[i].getY() + posy;
+		arrColor[i].setPoint(newX,newY);
+	}
+	
 	//draw
     drawPolyline(58,arrPoint,white);
-	
 	drawCircle (8,p,white);
 	drawCircle (4,p,white);
+	
+	//floodFill
+	floodFill4Seed(arrColor[0].getX(),arrColor[0].getY(),white,navy);
+	floodFill4Seed(arrColor[1].getX(),arrColor[1].getY(),white,skyblue);
+	floodFill4Seed(arrColor[2].getX(),arrColor[2].getY(),white,dodgerblue);
 }
 
 int main(){
-	Color red(225,0,0);
-	Color lala(-36,20,60);
 	Point start(100,100);
 	drawPlane(start);
-	floodFill4Seed(150,185,white,red);
 	return 0;
 }
