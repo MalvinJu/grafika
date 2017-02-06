@@ -9,6 +9,8 @@ using namespace std;
 Screen screen;
 
 Color white(255,255,255);
+Color rand1(100, 100, 100);
+Color black(0,0,0);
 Color navy(0,0,128);
 Color skyblue(135,206,235);
 Color dodgerblue(30,144,255);
@@ -213,7 +215,7 @@ void floodFill4Seed (int x, int y, Color cBorder, Color cNew) {
 	}  
 }
 
-void drawPlane (Point start){
+void drawPlane (Point start, Color col){
 	int posx = start.getX();
     int posy = start.getY();
     int nPoint = 58;
@@ -313,17 +315,17 @@ void drawPlane (Point start){
 	}
 	
 	//draw
-    drawPolyline(58,arrPoint,white);
-	drawCircle (8,p,white);
-	drawCircle (4,p,white);
+    drawPolyline(58,arrPoint,col);
+	drawCircle (8,p,col);
+	drawCircle (4,p,col);
 	
 	//floodFill
-	floodFill4Seed(arrColor[0].getX(),arrColor[0].getY(),white,navy);
-	floodFill4Seed(arrColor[1].getX(),arrColor[1].getY(),white,skyblue);
-	floodFill4Seed(arrColor[2].getX(),arrColor[2].getY(),white,dodgerblue);
+	floodFill4Seed(arrColor[0].getX(),arrColor[0].getY(),col,navy);
+	floodFill4Seed(arrColor[1].getX(),arrColor[1].getY(),col,skyblue);
+	floodFill4Seed(arrColor[2].getX(),arrColor[2].getY(),col,dodgerblue);
 }
 
-void drawPecahanPlane (Point start){
+void drawPecahanPlane (Point start, Color col){
 	int posx = start.getX();
     int posy = start.getY();
     int nColor = 5;
@@ -515,28 +517,38 @@ void drawPecahanPlane (Point start){
 	
 	//draw
     //drawPolyline(58,arrPoint,white);
-    drawPolyline(ntail1,arrPoint_tail1,white);
-    drawPolyline(ntail2,arrPoint_tail2,white);
-    drawPolyline(nbody1,arrPoint_body1,white);
-    drawPolyline(nbody2,arrPoint_body2,white);
-    drawPolyline(nkaca,arrPoint_kaca,white);
-    drawPolyline(nsayap,arrPoint_sayap,white);
-    drawPolyline(nroda,arrPoint_roda,white);
+    drawPolyline(ntail1,arrPoint_tail1,col);
+    drawPolyline(ntail2,arrPoint_tail2,col);
+    drawPolyline(nbody1,arrPoint_body1,col);
+    drawPolyline(nbody2,arrPoint_body2,col);
+    drawPolyline(nkaca,arrPoint_kaca, col);
+    drawPolyline(nsayap,arrPoint_sayap, col);
+    drawPolyline(nroda,arrPoint_roda,col);
 	drawCircle (8,p,white);
 	drawCircle (4,p,white);
 	
 	//floodFill
-	floodFill4Seed(arrColor[0].getX(),arrColor[0].getY(),white,navy);
-	floodFill4Seed(arrColor[1].getX(),arrColor[1].getY(),white,navy);
-	floodFill4Seed(arrColor[2].getX(),arrColor[2].getY(),white,skyblue);
-	floodFill4Seed(arrColor[3].getX(),arrColor[3].getY(),white,skyblue);
-	floodFill4Seed(arrColor[4].getX(),arrColor[4].getY(),white,dodgerblue);
+	floodFill4Seed(arrColor[0].getX(),arrColor[0].getY(),col,navy);
+	floodFill4Seed(arrColor[1].getX(),arrColor[1].getY(),col,navy);
+	floodFill4Seed(arrColor[2].getX(),arrColor[2].getY(),col,skyblue);
+	floodFill4Seed(arrColor[3].getX(),arrColor[3].getY(),col,skyblue);
+	floodFill4Seed(arrColor[4].getX(),arrColor[4].getY(),col,dodgerblue);
 }
 
+
+void drawBackground(){
+    for(int i =0; i<screen.getWidth(); i++){
+        for(int j=0; j<screen.getHeight(); j++){
+          screen.setColor(j,i, black);          
+        }
+    }
+}
 int main(){
+    drawBackground();
 	Point start(100,100);
 	//Point start1(100,100);
-	drawPecahanPlane(start);
-	//drawPlane(start);
+	//drawPecahanPlane(start);
+    
+	drawPlane(start, rand1);
 	return 0;
 }
