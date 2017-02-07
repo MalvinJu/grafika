@@ -14,6 +14,7 @@ Color black(0,0,0);
 Color navy(0,0,128);
 Color skyblue(135,206,235);
 Color dodgerblue(30,144,255);
+Color rand2(50,150,50);
 
 void plotSlopPositiveLine (Point P1, Point P2, Color C) {
 	int dX, dY, p;
@@ -267,7 +268,7 @@ void drawPlane (Point start, Color col){
 	arrColor[2].setPoint(13,5);
 	
 	//scale
-    int scaleFactor = 10;
+    int scaleFactor = 5;
     //1. pesawat
     for(int i = 0; i<nPoint; i++){
 		newX = arrPoint[i].getX() * scaleFactor;
@@ -377,7 +378,7 @@ void erasePlane (Point start, Color col){
 	arrColor[2].setPoint(13,5);
 	
 	//scale
-    int scaleFactor = 10;
+    int scaleFactor = 5;
     //1. pesawat
     for(int i = 0; i<nPoint; i++){
 		newX = arrPoint[i].getX() * scaleFactor;
@@ -520,7 +521,7 @@ void drawPecahanPlane (Point start, Color col){
 	arrColor[4].setPoint(13,5);
 	
 	//scale
-    int scaleFactor = 10;
+    int scaleFactor = 5;
     //1. pesawat
     for(int i = 0; i<ntail1; i++){
 		newX = arrPoint_tail1[i].getX() * scaleFactor;
@@ -649,13 +650,35 @@ void drawBackground(){
     }
 }
 
-void drawPeluru(int X){
-	
-	drawCircle(100, Point(5,5), white);
+void drawPeluru(int x){
+	int y=screen.getHeight()-100;
+	Color rand2_erase(51,150,51);
+	while(y>25){		
+		drawCircle(15, Point(x,y), white);
+		floodFill4Seed(x, y, white, rand2);
+		usleep(1000);
+		floodFill4Seed(x, y, white, rand2_erase);
+		drawCircle(15, Point(x,y), black);
+		y--;
+	}
+}
+
+void drawCannon(){
+	Point *arr = new Point[4];
+	int width = screen.getWidth()/2;
+	arr[0] = Point(width-30, screen.getHeight()-5);
+	arr[1] = Point(width-30, screen.getHeight()-80);
+	arr[2] = Point(width+30, screen.getHeight()-80);
+	arr[3] = Point(width+30, screen.getHeight()-5);
+	drawCircle(30, Point(width, screen.getHeight()-80), white);
+	floodFill4Seed(width, screen.getHeight()-80, white, navy);
+	floodFill4Seed(width, screen.getHeight()-15, white, navy);
+	drawPolygon(4, arr, white);
 }
 
 int main(){
     drawBackground();
+    drawCannon();
 	Point start(100,100);
 	//Point start1(100,100);
 	//drawPecahanPlane(start);
