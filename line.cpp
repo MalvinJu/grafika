@@ -2,8 +2,51 @@
 #include "Color.h"
 #include "Screen.h"
 #include <iostream>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <linux/fb.h>
+#include <sys/mman.h>
+#include <sys/ioctl.h>
+#include <pthread.h>
+#include <termios.h>
+
 using namespace std;
 
+static struct termios old, news;
+
+/* Initialize new terminal i/o settings */
+void initTermios(int echo) 
+{
+  tcgetattr(0, &old); /* grab old terminal i/o settings */
+  news = old; /* make new settings same as old settings */
+  news.c_lflag &= ~ICANON; /* disable buffered i/o */
+  news.c_lflag &= echo ? ECHO : ~ECHO; /* set echo mode */
+  tcsetattr(0, TCSANOW, &news); /* use these new terminal i/o settings now */
+}
+
+/* Restore old terminal i/o settings */
+void resetTermios(void) 
+{
+  tcsetattr(0, TCSANOW, &old);
+}
+
+/* Read 1 character - echo defines echo mode */
+char getch_(int echo) 
+{
+  char ch;
+  initTermios(echo);
+  ch = getchar();
+  resetTermios();
+  return ch;
+}
+
+/* Read 1 character without echo */
+char getch(void) 
+{
+  return getch_(0);
+}
 
 //global
 Screen screen;
@@ -268,7 +311,7 @@ void drawPlane (Point start, Color col){
 	arrColor[2].setPoint(13,5);
 	
 	//scale
-    int scaleFactor = 5;
+    int scaleFactor = 8;
     //1. pesawat
     for(int i = 0; i<nPoint; i++){
 		newX = arrPoint[i].getX() * scaleFactor;
@@ -378,7 +421,7 @@ void erasePlane (Point start, Color col){
 	arrColor[2].setPoint(13,5);
 	
 	//scale
-    int scaleFactor = 5;
+    int scaleFactor = 8;
     //1. pesawat
     for(int i = 0; i<nPoint; i++){
 		newX = arrPoint[i].getX() * scaleFactor;
@@ -429,6 +472,149 @@ void erasePlane (Point start, Color col){
 	drawCircle (4,p, black);
 
 }
+
+void erasePlaneAtEdge (Point start, Color col){
+	int posx = start.getX();
+    int posy = start.getY();
+    int nPoint = 58;
+    int nColor = 3;
+    
+    int newX, newY;
+    
+    Point *arrPoint = new Point[58];
+    Point *arrColor = new Point[3];
+    
+    //tail 10
+    arrPoint[0].setPoint(0,2); arrPoint[1].setPoint(2,2); 
+    arrPoint[2].setPoint(2,2); arrPoint[3].setPoint(5,6); 
+    arrPoint[4].setPoint(5,6); arrPoint[5].setPoint(9,8); 
+    arrPoint[6].setPoint(9,8); arrPoint[7].setPoint(1,8); 
+    arrPoint[8].setPoint(1,8); arrPoint[9].setPoint(0,2); 
+    
+    //body 28
+    arrPoint[10].setPoint(0,7); arrPoint[11].setPoint(1,7); 
+    arrPoint[12].setPoint(7,7); arrPoint[13].setPoint(19,7); 
+    arrPoint[14].setPoint(23,7); arrPoint[15].setPoint(25,7); 
+    arrPoint[16].setPoint(25,7); arrPoint[17].setPoint(30,9); 
+    arrPoint[18].setPoint(30,9); arrPoint[19].setPoint(25,11);
+    arrPoint[20].setPoint(25,11); arrPoint[21].setPoint(18,11);
+    arrPoint[22].setPoint(18,11); arrPoint[23].setPoint(17,12);
+    arrPoint[24].setPoint(17,12); arrPoint[25].setPoint(15,12);
+    arrPoint[26].setPoint(15,12); arrPoint[27].setPoint(9,21);
+    arrPoint[28].setPoint(9,21); arrPoint[29].setPoint(5,21);
+    arrPoint[30].setPoint(5,21); arrPoint[31].setPoint(8,12);
+    arrPoint[32].setPoint(8,12); arrPoint[33].setPoint(9,11);
+    arrPoint[34].setPoint(9,11); arrPoint[35].setPoint(0,11);
+    arrPoint[36].setPoint(0,11); arrPoint[37].setPoint(0,7);
+    
+    //kaca
+    arrPoint[38].setPoint(19,7); arrPoint[39].setPoint(20,6);
+    arrPoint[40].setPoint(19,7); arrPoint[41].setPoint(20,8);
+    arrPoint[42].setPoint(22,6); arrPoint[43].setPoint(23,7);
+    arrPoint[44].setPoint(22,8); arrPoint[45].setPoint(23,7);
+    arrPoint[46].setPoint(20,6); arrPoint[47].setPoint(22,6);
+    arrPoint[48].setPoint(20,8); arrPoint[49].setPoint(22,8);
+    
+		
+	//sayap
+	arrPoint[50].setPoint(10,7); arrPoint[51].setPoint(17,0);
+	arrPoint[52].setPoint(17,0); arrPoint[53].setPoint(19,0);
+	arrPoint[54].setPoint(19,0); arrPoint[55].setPoint(18,7);
+		
+		
+	//roda
+	arrPoint[56].setPoint(19,11); arrPoint[57].setPoint(19,12);
+	Point p;//lingkaran
+	p.setPoint(19,13);
+	
+	//set point untuk Color
+	//tail
+	arrColor[0].setPoint(2,5);
+	arrColor[1].setPoint(5,9);
+	arrColor[2].setPoint(13,5);
+	
+	//scale
+    int scaleFactor = 8;
+    //1. pesawat
+    for(int i = 0; i<nPoint; i++){
+		newX = arrPoint[i].getX() * scaleFactor;
+		newY = arrPoint[i].getY() * scaleFactor;
+		arrPoint[i].setPoint(newX, newY);
+	}
+	//2. roda
+	newX = p.getX() * scaleFactor;
+	newY = p.getY() * scaleFactor;
+	p.setPoint(newX, newY);
+	
+	//3. color
+	for(int i = 0; i<nColor; i++){
+		newX = arrColor[i].getX() * scaleFactor;
+		newY = arrColor[i].getY() * scaleFactor;
+		arrColor[i].setPoint(newX,newY);
+	}
+	
+	//position
+	//1. pesawat
+	for (int i = 0; i<nPoint; i++){
+		newX = arrPoint[i].getX() + posx;
+		newY = arrPoint[i].getY() + posy;		
+		arrPoint[i].setPoint(newX,newY);
+	}	
+	//2. roda
+	newX = p.getX() + posx;
+	newY = p.getY() + posy;
+	p.setPoint(newX, newY);
+	
+	//3. color
+	for(int i = 0; i<nColor; i++){
+		newX = arrColor[i].getX() + posx;
+		newY = arrColor[i].getY() + posy;
+		arrColor[i].setPoint(newX,newY);
+	}
+	
+	//floodFill
+	Color navy_erase(0,0,129);
+	Color skyblue_erase(135,206,236);
+	Color dodgerblue_erase(30,144,254);
+	floodFill4Seed(arrColor[0].getX(),arrColor[0].getY(),col, black);
+	floodFill4Seed(arrColor[1].getX(),arrColor[1].getY(),col, black);
+	floodFill4Seed(arrColor[2].getX(),arrColor[2].getY(),col, black);	
+	//draw
+    drawPolyline(58,arrPoint, black);
+	drawCircle (8,p, black);
+	drawCircle (4,p, black);
+
+}
+
+void *plane_fly(void *args){
+    int i=200;
+    int switc = 0;
+    int stop = 0;
+    Point start;
+    start = *((Point *) args);
+    while(1){
+        /*for(int j=i-110;j<=i+110;j++){
+			if(COLLISION){
+				drawPecahanPlane(fi,i,100,0,0,0,0);
+				stop = 1;
+				break;
+			}
+        }
+        if(stop==1){
+            break;
+        }*/
+		drawPlane(start, rand1);
+		erasePlane(start, rand1);
+        if(start.getX()+250>screen.getWidth()){
+			erasePlaneAtEdge(start,rand1);
+			start.setPoint(100,100);
+		}		
+        start.setPoint(start.getX()+1, start.getY());
+
+        //usleep(2000);
+    }
+}
+
 
 void drawPecahanPlane (Point start, Color col){
 	int posx = start.getX();
@@ -521,7 +707,7 @@ void drawPecahanPlane (Point start, Color col){
 	arrColor[4].setPoint(13,5);
 	
 	//scale
-    int scaleFactor = 5;
+    int scaleFactor = 8;
     //1. pesawat
     for(int i = 0; i<ntail1; i++){
 		newX = arrPoint_tail1[i].getX() * scaleFactor;
@@ -641,7 +827,6 @@ void drawPecahanPlane (Point start, Color col){
 }
 
 
-
 void drawBackground(){
     for(int i =0; i<screen.getWidth(); i++){
         for(int j=0; j<screen.getHeight(); j++){
@@ -650,42 +835,99 @@ void drawBackground(){
     }
 }
 
-void drawPeluru(int x){
-	int y=screen.getHeight()-100;
+void *drawPeluru(void *args){
+    int y=screen.getHeight()-150;
 	Color rand2_erase(51,150,51);
-	while(y>25){		
-		drawCircle(15, Point(x,y), white);
-		floodFill4Seed(x, y, white, rand2);
-		usleep(1000);
-		floodFill4Seed(x, y, white, rand2_erase);
-		drawCircle(15, Point(x,y), black);
+    int pos;
+    pos = *((int *) args);
+    while(y>16){		
+		drawCircle(10, Point(pos,y), white);
+		floodFill4Seed(pos, y, white, rand2);
+		usleep(50);
+		if(y==17){
+			floodFill4Seed(pos, y, white, black);
+			drawCircle(10, Point(pos,y), black);
+		}
+		else{
+			floodFill4Seed(pos, y, white, rand2_erase);
+			drawCircle(10, Point(pos,y), black);
+		}
 		y--;
-	}
+    }
+    
 }
 
-void drawCannon(){
+void drawCannon(int x){
 	Point *arr = new Point[4];
-	int width = screen.getWidth()/2;
+	int width = x;
 	arr[0] = Point(width-30, screen.getHeight()-5);
 	arr[1] = Point(width-30, screen.getHeight()-80);
 	arr[2] = Point(width+30, screen.getHeight()-80);
 	arr[3] = Point(width+30, screen.getHeight()-5);
-	drawCircle(30, Point(width, screen.getHeight()-80), white);
+	drawCircle(30, Point(width, screen.getHeight()-79), white);
 	floodFill4Seed(width, screen.getHeight()-80, white, navy);
-	floodFill4Seed(width, screen.getHeight()-15, white, navy);
 	drawPolygon(4, arr, white);
 }
 
+void eraseCannon(int x){
+	Point *arr = new Point[4];
+	int width = x;
+	arr[0] = Point(width-30, screen.getHeight()-5);
+	arr[1] = Point(width-30, screen.getHeight()-80);
+	arr[2] = Point(width+30, screen.getHeight()-80);
+	arr[3] = Point(width+30, screen.getHeight()-5);
+	floodFill4Seed(width, screen.getHeight()-80, white, black);
+	drawCircle(30, Point(width, screen.getHeight()-79), black);
+	drawPolygon(4, arr, black);
+}
+
+
 int main(){
+
     drawBackground();
-    drawCannon();
-	Point start(100,100);
-	//Point start1(100,100);
-	//drawPecahanPlane(start);
-	for(int i=0; i<10000;i++){
-		start.setPoint(i+100, 100);
-		drawPlane(start, rand1);
-		erasePlane(start, rand1);
+    int posCannon = screen.getWidth()/2;
+    drawCannon(posCannon);
+    	Point start(1500,100);
+	
+	 //Create thread for flying plane
+    pthread_t thread;
+    Point *argu = (Point *)malloc(sizeof(*argu));
+	*argu = start;
+    int rc = pthread_create(&thread, NULL, plane_fly, argu);
+	
+    while(1){
+        int c = getch();
+        int n;
+        
+        switch(c){
+            case 32 :
+            {
+                //shoot
+                //Create another thread for bullet
+                pthread_t thread;
+                int *arg = (int *)malloc(sizeof(*arg));
+                *arg = posCannon;
+                usleep(10000);
+                int rc = pthread_create(&thread, NULL, drawPeluru, arg);
+                break;
+            }
+            case 27 :
+                
+                n = getch();
+                n = getch();
+                if(n==68){
+                    //go left
+                    eraseCannon(posCannon);
+                    drawCannon(posCannon-10);
+                    posCannon = posCannon -10;
+                } else if(n==67){
+                    //go right
+                    eraseCannon(posCannon);
+                    drawCannon(posCannon+10);
+                    posCannon = posCannon +10;
+                }
+                break;
+        }
 	}
 	return 0;
 }
