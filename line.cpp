@@ -16,6 +16,8 @@ using namespace std;
 
 static struct termios old, news;
 
+int x_peluru, y_peluru;
+bool isCollide = false;
 /* Initialize new terminal i/o settings */
 void initTermios(int echo) 
 {
@@ -586,36 +588,6 @@ void erasePlaneAtEdge (Point start, Color col){
 
 }
 
-void *plane_fly(void *args){
-    int i=200;
-    int switc = 0;
-    int stop = 0;
-    Point start;
-    start = *((Point *) args);
-    while(1){
-        /*for(int j=i-110;j<=i+110;j++){
-			if(COLLISION){
-				drawPecahanPlane(fi,i,100,0,0,0,0);
-				stop = 1;
-				break;
-			}
-        }
-        if(stop==1){
-            break;
-        }*/
-		drawPlane(start, rand1);
-		erasePlane(start, rand1);
-        if(start.getX()+250>screen.getWidth()){
-			erasePlaneAtEdge(start,rand1);
-			start.setPoint(100,100);
-		}		
-        start.setPoint(start.getX()+1, start.getY());
-
-        //usleep(2000);
-    }
-}
-
-
 void drawPecahanPlane (Point start, Color col){
 	int posx = start.getX();
     int posy = start.getY();
@@ -826,6 +798,45 @@ void drawPecahanPlane (Point start, Color col){
 	floodFill4Seed(arrColor[4].getX(),arrColor[4].getY(),col,dodgerblue);
 }
 
+void *plane_fly(void *args){
+    int i=200;
+    int switc = 0;
+    int stop = 0;
+    Point start;
+    start = *((Point *) args);
+    while(!isCollide){
+        /*for(int j=i-110;j<=i+110;j++){
+			if(COLLISION){
+				drawPecahanPlane(fi,i,100,0,0,0,0);
+				stop = 1;
+				break;
+			}
+        }
+        if(stop==1){
+            break;
+        }*/
+        
+		drawPlane(start, rand1);
+		erasePlane(start, rand1);
+		
+		if (x_peluru > start.getX() && x_peluru < start.getX() + 240 && y_peluru < start.getY() + 200) {
+				isCollide = true;
+				erasePlaneAtEdge(start,rand1);
+				drawCircle(10, Point(x_peluru,y_peluru), black);
+				floodFill4Seed(x_peluru, y_peluru, white, black);	
+				drawPecahanPlane(start, rand1);
+		}
+		
+		
+        if(start.getX()+240>screen.getWidth()){
+			erasePlaneAtEdge(start,rand1);
+			start.setPoint(100,100);
+		}		
+        start.setPoint(start.getX()+1, start.getY());
+
+        //usleep(2000);
+    }
+}
 
 void drawBackground(){
     for(int i =0; i<screen.getWidth(); i++){
@@ -836,23 +847,23 @@ void drawBackground(){
 }
 
 void *drawPeluru(void *args){
-    int y=screen.getHeight()-150;
+    y_peluru=screen.getHeight()-150;
 	Color rand2_erase(51,150,51);
-    int pos;
-    pos = *((int *) args);
-    while(y>16){		
-		drawCircle(10, Point(pos,y), white);
-		floodFill4Seed(pos, y, white, rand2);
+    x_peluru;
+    x_peluru = *((int *) args);
+    while(y_peluru>16 && !isCollide){		
+		drawCircle(10, Point(x_peluru,y_peluru), white);
+		floodFill4Seed(x_peluru, y_peluru, white, rand2);
 		usleep(50);
-		if(y==17){
-			floodFill4Seed(pos, y, white, black);
-			drawCircle(10, Point(pos,y), black);
+		if(y_peluru==17){
+			floodFill4Seed(x_peluru, y_peluru, white, black);
+			drawCircle(10, Point(x_peluru,y_peluru), black);
 		}
 		else{
-			floodFill4Seed(pos, y, white, rand2_erase);
-			drawCircle(10, Point(pos,y), black);
+			floodFill4Seed(x_peluru, y_peluru, white, rand2_erase);
+			drawCircle(10, Point(x_peluru,y_peluru), black);
 		}
-		y--;
+		y_peluru--;
     }
     
 }
