@@ -585,7 +585,6 @@ void erasePlaneAtEdge (Point start, Color col){
     drawPolyline(58,arrPoint, black);
 	drawCircle (8,p, black);
 	drawCircle (4,p, black);
-
 }
 
 void drawPecahanPlane (Point start, Color col){
@@ -798,6 +797,220 @@ void drawPecahanPlane (Point start, Color col){
 	floodFill4Seed(arrColor[4].getX(),arrColor[4].getY(),col,dodgerblue);
 }
 
+
+void erasePecahanPlane (Point start, Color col){
+	int posx = start.getX();
+    int posy = start.getY();
+    int nColor = 5;
+    
+    int newX, newY;
+    
+    //Point *arrPoint = new Point[58];
+    Point *arrPoint_tail1 = new Point[8];
+    Point *arrPoint_tail2 = new Point[6];
+    Point *arrPoint_body1 = new Point[28];
+	Point *arrPoint_body2 = new Point[16];
+	Point *arrPoint_kaca = new Point[12];
+    Point *arrPoint_sayap = new Point[8];
+    Point *arrPoint_roda = new Point[2];
+    int ntail1 = 8; int nbody1 = 28;	int nkaca = 12; int nroda = 2;
+  	int ntail2 = 6;	int nbody2 = 16; int nsayap = 8; 
+    
+    Point *arrColor = new Point[5];
+    
+    //tail1 8
+    arrPoint_tail1[0].setPoint(0,2); arrPoint_tail1[1].setPoint(2,2); 
+    arrPoint_tail1[2].setPoint(2,2); arrPoint_tail1[3].setPoint(5,6); 
+    arrPoint_tail1[4].setPoint(5,6); arrPoint_tail1[5].setPoint(1,8); 
+    arrPoint_tail1[6].setPoint(1,8); arrPoint_tail1[7].setPoint(0,2); 
+
+    //tail2 6
+    arrPoint_tail2[0].setPoint(6,7); arrPoint_tail2[1].setPoint(10,9); 
+    arrPoint_tail2[2].setPoint(10,9); arrPoint_tail2[3].setPoint(2,9); 
+    arrPoint_tail2[4].setPoint(2,9); arrPoint_tail2[5].setPoint(6,7); 
+    
+    
+    //body1 28
+    arrPoint_body1[0].setPoint(0,10); arrPoint_body1[1].setPoint(1,10);
+    arrPoint_body1[22].setPoint(1,10); arrPoint_body1[23].setPoint(1,11);
+    arrPoint_body1[24].setPoint(1,11); arrPoint_body1[25].setPoint(9,11);
+    arrPoint_body1[26].setPoint(9,11); arrPoint_body1[27].setPoint(7,10);
+    arrPoint_body1[2].setPoint(7,10); arrPoint_body1[3].setPoint(19,10); 
+    arrPoint_body1[4].setPoint(19,10); arrPoint_body1[5].setPoint(18,13);
+    arrPoint_body1[6].setPoint(18,13); arrPoint_body1[7].setPoint(17,15);
+    arrPoint_body1[8].setPoint(17,15); arrPoint_body1[9].setPoint(15,15);
+    arrPoint_body1[10].setPoint(15,15); arrPoint_body1[11].setPoint(9,24);
+    arrPoint_body1[12].setPoint(9,24); arrPoint_body1[13].setPoint(5,24);
+    arrPoint_body1[14].setPoint(5,24); arrPoint_body1[15].setPoint(8,15);
+    arrPoint_body1[16].setPoint(8,15); arrPoint_body1[17].setPoint(9,14);
+    arrPoint_body1[18].setPoint(9,14); arrPoint_body1[19].setPoint(0,14);
+    arrPoint_body1[20].setPoint(0,14); arrPoint_body1[21].setPoint(0,10);
+
+
+    //body2 16
+    arrPoint_body2[0].setPoint(24,11); arrPoint_body2[1].setPoint(26,11); 
+    arrPoint_body2[2].setPoint(26,11); arrPoint_body2[3].setPoint(31,13); 
+    arrPoint_body2[4].setPoint(31,13); arrPoint_body2[5].setPoint(26,14);
+    arrPoint_body2[6].setPoint(26,14); arrPoint_body2[7].setPoint(19,14);
+    arrPoint_body2[8].setPoint(19,14); arrPoint_body2[9].setPoint(20,11);
+    arrPoint_body2[10].setPoint(20,11); arrPoint_body2[11].setPoint(21,12);
+    arrPoint_body2[12].setPoint(21,12); arrPoint_body2[13].setPoint(23,12);
+    arrPoint_body2[14].setPoint(23,12); arrPoint_body2[15].setPoint(24,11);
+
+
+    //kaca 12
+    arrPoint_kaca[0].setPoint(20,11); arrPoint_kaca[1].setPoint(21,10);
+    arrPoint_kaca[2].setPoint(20,11); arrPoint_kaca[3].setPoint(21,12);
+    arrPoint_kaca[4].setPoint(23,10); arrPoint_kaca[5].setPoint(24,11);
+    arrPoint_kaca[6].setPoint(23,12); arrPoint_kaca[7].setPoint(24,11);
+    arrPoint_kaca[8].setPoint(21,10); arrPoint_kaca[9].setPoint(23,10);
+    arrPoint_kaca[10].setPoint(21,12); arrPoint_kaca[11].setPoint(23,12);
+    
+		
+	//sayap 8
+	arrPoint_sayap[0].setPoint(10,7); arrPoint_sayap[1].setPoint(17,0);
+	arrPoint_sayap[2].setPoint(17,0); arrPoint_sayap[3].setPoint(19,0);
+	arrPoint_sayap[4].setPoint(19,0); arrPoint_sayap[5].setPoint(18,7);
+	arrPoint_sayap[6].setPoint(18,7); arrPoint_sayap[7].setPoint(10,7);	
+		
+	//roda 2
+	arrPoint_roda[0].setPoint(24,20); arrPoint_roda[1].setPoint(25,22);
+	Point p;//lingkaran
+	p.setPoint(25,22);
+	
+	//set point untuk Color
+	//tail
+	arrColor[0].setPoint(4,5);
+	arrColor[1].setPoint(6,8);
+	//body
+	arrColor[2].setPoint(10,11);
+	arrColor[3].setPoint(26,13);
+	//sayap
+	arrColor[4].setPoint(13,5);
+	
+	//scale
+    int scaleFactor = 8;
+    //1. pesawat
+    for(int i = 0; i<ntail1; i++){
+		newX = arrPoint_tail1[i].getX() * scaleFactor;
+		newY = arrPoint_tail1[i].getY() * scaleFactor;
+		arrPoint_tail1[i].setPoint(newX, newY);
+	}
+	for(int i = 0; i<ntail2; i++){
+		newX = arrPoint_tail2[i].getX() * scaleFactor;
+		newY = arrPoint_tail2[i].getY() * scaleFactor;
+		arrPoint_tail2[i].setPoint(newX, newY);
+	}
+	for(int i = 0; i<nbody1; i++){
+		newX = arrPoint_body1[i].getX() * scaleFactor;
+		newY = arrPoint_body1[i].getY() * scaleFactor;
+		arrPoint_body1[i].setPoint(newX, newY);
+	}
+	for(int i = 0; i<nbody2; i++){
+		newX = arrPoint_body2[i].getX() * scaleFactor;
+		newY = arrPoint_body2[i].getY() * scaleFactor;
+		arrPoint_body2[i].setPoint(newX, newY);
+	}
+	for(int i = 0; i<nkaca; i++){
+		newX = arrPoint_kaca[i].getX() * scaleFactor;
+		newY = arrPoint_kaca[i].getY() * scaleFactor;
+		arrPoint_kaca[i].setPoint(newX, newY);
+	}
+	for(int i = 0; i<nsayap; i++){
+		newX = arrPoint_sayap[i].getX() * scaleFactor;
+		newY = arrPoint_sayap[i].getY() * scaleFactor;
+		arrPoint_sayap[i].setPoint(newX, newY);
+	}
+	for(int i = 0; i<nroda; i++){
+		newX = arrPoint_roda[i].getX() * scaleFactor;
+		newY = arrPoint_roda[i].getY() * scaleFactor;
+		arrPoint_roda[i].setPoint(newX, newY);
+	}
+	//2. roda
+	newX = p.getX() * scaleFactor;
+	newY = p.getY() * scaleFactor;
+	p.setPoint(newX, newY);
+	
+	//3. color
+	for(int i = 0; i<nColor; i++){
+		newX = arrColor[i].getX() * scaleFactor;
+		newY = arrColor[i].getY() * scaleFactor;
+		arrColor[i].setPoint(newX,newY);
+	}
+	
+	//position
+	//1. pesawat	
+
+	for(int i = 0; i<ntail1; i++){
+		newX = arrPoint_tail1[i].getX() + posx;
+		newY = arrPoint_tail1[i].getY() + posy;		
+		arrPoint_tail1[i].setPoint(newX,newY);
+	}
+	for(int i = 0; i<ntail2; i++){
+		newX = arrPoint_tail2[i].getX() + posx;
+		newY = arrPoint_tail2[i].getY() + posy;
+		arrPoint_tail2[i].setPoint(newX, newY);
+	}
+	for(int i = 0; i<nbody1; i++){
+		newX = arrPoint_body1[i].getX() + posx;
+		newY = arrPoint_body1[i].getY() + posy;
+		arrPoint_body1[i].setPoint(newX, newY);
+	}
+	for(int i = 0; i<nbody2; i++){
+		newX = arrPoint_body2[i].getX() + posx;
+		newY = arrPoint_body2[i].getY() + posy;
+		arrPoint_body2[i].setPoint(newX, newY);
+	}
+	for(int i = 0; i<nkaca; i++){
+		newX = arrPoint_kaca[i].getX() + posx;
+		newY = arrPoint_kaca[i].getY() + posy;
+		arrPoint_kaca[i].setPoint(newX, newY);
+	}
+	for(int i = 0; i<nsayap; i++){
+		newX = arrPoint_sayap[i].getX() + posx;
+		newY = arrPoint_sayap[i].getY() + posy;
+		arrPoint_sayap[i].setPoint(newX, newY);
+	}
+	for(int i = 0; i<nroda; i++){
+		newX = arrPoint_roda[i].getX() + posx;
+		newY = arrPoint_roda[i].getY() + posy;
+		arrPoint_roda[i].setPoint(newX, newY);
+	}
+	//2. roda
+	newX = p.getX() + posx;
+	newY = p.getY() + posy;
+	p.setPoint(newX, newY);
+	
+	//3. color
+	for(int i = 0; i<nColor; i++){
+		newX = arrColor[i].getX() + posx;
+		newY = arrColor[i].getY() + posy;
+		arrColor[i].setPoint(newX,newY);
+	}
+		//floodFill
+	Color navy_erase(0,0,129);
+	Color skyblue_erase(135,206,236);
+	Color dodgerblue_erase(30,144,254);
+	floodFill4Seed(arrColor[0].getX(),arrColor[0].getY(),col,navy_erase);
+	floodFill4Seed(arrColor[1].getX(),arrColor[1].getY(),col,navy_erase);
+	floodFill4Seed(arrColor[2].getX(),arrColor[2].getY(),col,skyblue_erase);
+	floodFill4Seed(arrColor[3].getX(),arrColor[3].getY(),col,skyblue_erase);
+	floodFill4Seed(arrColor[4].getX(),arrColor[4].getY(),col,dodgerblue_erase);
+	//draw
+    //drawPolyline(58,arrPoint,white);
+    drawPolyline(ntail1,arrPoint_tail1,black);
+    drawPolyline(ntail2,arrPoint_tail2,black);
+    drawPolyline(nbody1,arrPoint_body1,black);
+    drawPolyline(nbody2,arrPoint_body2,black);
+    drawPolyline(nkaca,arrPoint_kaca, black);
+    drawPolyline(nsayap,arrPoint_sayap, black);
+    drawPolyline(nroda,arrPoint_roda,black);
+	drawCircle (8,p,black);
+	drawCircle (4,p,black);
+	
+
+}
+
 void *plane_fly(void *args){
     int i=200;
     int switc = 0;
@@ -824,7 +1037,12 @@ void *plane_fly(void *args){
 				erasePlaneAtEdge(start,rand1);
 				drawCircle(10, Point(x_peluru,y_peluru), black);
 				floodFill4Seed(x_peluru, y_peluru, white, black);	
-				drawPecahanPlane(start, rand1);
+				
+				for(int i = start.getY(); i<screen.getHeight()-400; i++){
+					drawPecahanPlane(start, rand1);
+					erasePecahanPlane(start,rand1);
+					start.setPoint(start.getX(), i);
+				}
 		}
 		
 		
