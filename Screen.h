@@ -31,4 +31,7 @@ private :
 	char *fbp;
 
 };
+
+extern Screen screen; //a Global variable screen for other class to use
+
 #endif

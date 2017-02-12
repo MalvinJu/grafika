@@ -1,5 +1,7 @@
 #include "Screen.h"
 
+
+
 Screen::Screen(){
 	fb_fd = open("/dev/fb0",O_RDWR);
 
@@ -39,7 +41,7 @@ void Screen::setColor(int r, int c, int red, int green, int blue){
 
 void Screen::setColor(int r, int c, Color color){
 	int location = (c+vinfo.xoffset) * (vinfo.bits_per_pixel/8) + (r+vinfo.yoffset) * finfo.line_length;
-	*(fbp + location) =color.getBlue();  
+	*(fbp + location) = color.getBlue();  
 	*(fbp + location +1) = color.getGreen();
 	*(fbp + location +2) = color.getRed();
 	*(fbp + location +3) = 0;
