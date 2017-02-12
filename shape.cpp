@@ -128,7 +128,7 @@ void Shape::Rotate(int theta){
 
 void Shape::erase(){
 	linedrawer.drawPolygon(edges,Color(0,0,0) );
-	//linedrawer.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Color(0,0,0));
+	linedrawer.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Color(0,0,0));
 }
 void Shape::draw(){
 	linedrawer.drawPolygon(edges,Border);
