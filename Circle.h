@@ -31,7 +31,6 @@ public:
 	//rotate the object by theta degree clockwise
 	void Rotate(int theta);
 
-
 //private:
 	void erase();
 	void draw();

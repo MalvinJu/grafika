@@ -174,14 +174,14 @@ void Shape::setCenter(Point P){
 void Shape::RotatePoros(int theta, Point poros){
 	erase();
 	for(int i=0; i<edges.size(); i++){
-		edges[i].moveBy(-center.getX(), -center.getY());
+		//edges[i].moveBy(-center.getX(), -center.getY());
 		edges[i].rotatePoros(theta, poros);
-		edges[i].moveBy(center.getX(), center.getY());
+		//edges[i].moveBy(center.getX(), center.getY());
 
 	}
-	floodfill_seed.moveBy(-center.getX(), -center.getY());
+	//floodfill_seed.moveBy(-center.getX(), -center.getY());
 	floodfill_seed.rotatePoros(theta, poros);
-	floodfill_seed.moveBy(center.getX(), center.getY());
+	//floodfill_seed.moveBy(center.getX(), center.getY());
 	draw();
 }
 
