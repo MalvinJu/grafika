@@ -184,3 +184,13 @@ void Shape::RotatePoros(int theta, Point poros){
 	floodfill_seed.moveBy(center.getX(), center.getY());
 	draw();
 }
+
+//tes pesawat parabola
+void Shape::PlaneParabola(int theta, Point poros){
+	erase();
+	for(int i=0; i<edges.size(); i++){
+		edges[i].rotatePoros(theta, poros);
+	}
+	floodfill_seed.rotatePoros(theta, poros);
+	draw();
+}

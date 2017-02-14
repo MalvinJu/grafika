@@ -4,6 +4,12 @@
 #include <iostream>
 using namespace std;
 
+Shape tail,body,front,wing, baling1, baling2,baling3,baling4, balingtemp;
+Color white(255,255,255);
+Color z(0,255,050);
+Color a(100,100,100);
+Color black(0,100,0);
+
 Shape makePlaneTail(Point start, Color border, Color fill){
 	vector<Point> nodeTemplate;
 	nodeTemplate.push_back(Point(0,2)); nodeTemplate.push_back(Point(2,2)); 
@@ -187,6 +193,27 @@ Shape makeBaling2 (Point start, Color border, Color fill,int n){
 	}
 	
 	return baling2;
+}
+
+void *plane_fly(void *args){
+    int i;
+    Point start;
+    start = *((Point *) args);
+	wing = makePlaneWing(start,white,z);
+	front = makePlaneFront(start,white,z);
+	body = makePlaneBody(start,white,z);
+	tail = makePlaneTail(start,white,z);
+	while(1){
+		wing.PlaneParabola(-1,Point(200,200));
+		wing.moveBy(10,0);
+		front.PlaneParabola(-1,Point(200,200));
+		front.moveBy(10,0);
+		tail.PlaneParabola(-1,Point(200,200));
+		tail.moveBy(10,0);
+		body.PlaneParabola(-1,Point(200,200));
+		body.moveBy(10,0);
+		usleep(10000);
+    }
 }
 
 /*void erasePlane (Point start, Color col){

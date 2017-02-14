@@ -36,6 +36,7 @@ public:
 	//cePoint center as  center of rotation
 	void Rotate(int theta);
 	void RotatePoros(int theta,Point poros);
+	void PlaneParabola(int theta,Point poros);
 	
 
 	//set the center of rotation to P

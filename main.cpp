@@ -66,7 +66,7 @@ Color rand2(50,150,50);
 
 
 
-
+//MENGGAMBAR PESAWAT
 void drawPlane (Point start, Color col){
 	int posx = start.getX();
     int posy = start.getY();
