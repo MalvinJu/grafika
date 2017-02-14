@@ -85,9 +85,7 @@ Shape::Shape(){
 	
 }
 
-Shape::Shape( vector<Point>& starting_edge, Color C ){
-
-
+Shape::Shape(vector<Point>& starting_edge, Color C ){
 	edges.clear();
 	edges = starting_edge;
 	Border = C;
