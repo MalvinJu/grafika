@@ -14,7 +14,10 @@ public:
 
 	//Constructor, 
 	//starting edge is collection of point that make the shape
+	Shape();
 	Shape(vector<Point>& starting_edge, Color C );
+	Shape& operator=(const Shape &obj);
+	Shape(const Shape &obj);
 	//Destructor
 	~Shape();
 
@@ -32,6 +35,8 @@ public:
 	//rotate the object by theta degree clockwise with 
 	//cePoint center as  center of rotation
 	void Rotate(int theta);
+	void RotatePoros(int theta,Point poros);
+	
 
 	//set the center of rotation to P
 	void setCenter(Point P);

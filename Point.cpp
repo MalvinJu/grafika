@@ -58,3 +58,10 @@ void Point::rotate(int theta){
 	x = oldX*cos(degree) - oldY*sin(degree);
 	y = oldX*sin(degree) + oldY*cos(degree);
 }
+
+void Point::rotatePoros(int theta, Point poros){
+	double oldX = x, oldY = y;
+	double degree = ((double)theta)* PI/180 ;
+	x = poros.getX() + ((oldX - poros.getX()) * cos(degree) - (poros.getY() - oldY) * sin(degree));
+	y = poros.getY() - ((oldX - poros.getX()) * sin(degree) + (poros.getY() - oldY) * cos(degree));
+}

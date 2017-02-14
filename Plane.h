@@ -140,6 +140,54 @@ Circle makeRoda (Point start,int r){
 	return roda;
 }
 
+Shape makeBaling2 (Point start, Color border, Color fill,int n){
+	vector<Point> nodeTemplate;
+	nodeTemplate.push_back(Point(2,32));
+	nodeTemplate.push_back(Point(3,30));
+	nodeTemplate.push_back(Point(4,32));
+	nodeTemplate.push_back(Point(2,32));
+	nodeTemplate.push_back(Point(2,34));
+	nodeTemplate.push_back(Point(4,34));
+	nodeTemplate.push_back(Point(4,32));
+	
+	/*nodeTemplate.push_back(Point(12,12));
+	nodeTemplate.push_back(Point(14,12));
+	nodeTemplate.push_back(Point(12,14));
+	nodeTemplate.push_back(Point(14,14));
+	nodeTemplate.push_back(Point(12,12));
+	nodeTemplate.push_back(Point(13,10));
+	nodeTemplate.push_back(Point(14,12));
+	nodeTemplate.push_back(Point(14,14));
+	nodeTemplate.push_back(Point(12,14));*/
+	
+	int scaleFactor = 4;
+	int newx,newy;
+	vector<Point> nodeScaling;
+	for(int i =0; i < nodeTemplate.size(); i++){
+		newx = nodeTemplate[i].getX() * scaleFactor;
+		newy = nodeTemplate[i].getY() * scaleFactor;
+		nodeScaling.push_back(Point(newx,newy));
+	}
+	
+	//createShape
+	Shape baling2(nodeScaling, border);
+	baling2.setFillColor(fill);
+	//setPosition
+	baling2.moveBy(start.getX(),start.getY());
+	//turn
+	baling2.Rotate(n*90);
+	if(n==1){
+		baling2.moveBy((-3)*scaleFactor,(-3)*scaleFactor);
+	}
+	else if(n==2){
+		baling2.moveBy(0,(-6)*scaleFactor);
+	}
+	else if(n==3){
+		baling2.moveBy(3*scaleFactor,(-3)*scaleFactor);
+	}
+	
+	return baling2;
+}
 
 /*void erasePlane (Point start, Color col){
 	int posx = start.getX();
