@@ -14,6 +14,7 @@ public:
 
 	//Constructor, 
 	//starting edge is collection of point that make the shape
+	Shape();
 	Shape(vector<Point>& starting_edge, Color C );
 	//Destructor
 	~Shape();

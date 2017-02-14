@@ -81,7 +81,7 @@ Point getFloodFillSeed(vector<Point> edge){
 	return P;
 }
 
-
+Shape::Shape(){}
 
 Shape::Shape(vector<Point>& starting_edge, Color C ){
 

@@ -1,6 +1,6 @@
 #include "Circle.h"
 
-
+Circle::Circle(){}
 
 Circle::Circle(Point P, int r, Color c ){
 

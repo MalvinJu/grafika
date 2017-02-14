@@ -1,3 +1,5 @@
+#ifndef _Abstract_Shape_
+#define _Abstract_Shape_
 #include "Color.h"
 
 class AbstractShape{
@@ -18,3 +20,5 @@ class AbstractShape{
 
 
 };
+
+#endif

@@ -12,6 +12,7 @@ public:
 
 	//Constructor, 
 	//Point
+	Circle();
 	Circle(Point P, int r, Color c );
 	//Destructor
 	~Circle();
@@ -31,7 +32,7 @@ public:
 	void Rotate(int theta);
 
 
-private:
+//private:
 	void erase();
 	void draw();
 	int radius;
