@@ -146,6 +146,62 @@ Circle makeRoda (Point start,int r){
 	return roda;
 }
 
+Shape makeCannon(Point start, Color border, Color fill){
+	vector<Point> nodeTemplate;
+	nodeTemplate.push_back(Point(0,0));
+    nodeTemplate.push_back(Point(0,80));
+    nodeTemplate.push_back(Point(60,80)); 
+	nodeTemplate.push_back(Point(60,0));
+	int scaleFactor = 1;
+	int newx,newy;
+	vector<Point> nodeScaling;
+	for(int i =0; i < nodeTemplate.size(); i++){
+		newx = nodeTemplate[i].getX() * scaleFactor;
+		newy = nodeTemplate[i].getY() * scaleFactor;
+		nodeScaling.push_back(Point(newx,newy));
+	}
+	
+	Shape cannon(nodeScaling, border);
+	cannon.setFillColor(fill);
+	//setPosition
+	cannon.moveBy(start.getX(),start.getY());
+	return cannon;
+}
+
+Shape makeBullet(Point start, Color border, Color fill){
+	vector<Point> nodeTemplate;
+	nodeTemplate.push_back(Point(0,0));
+    nodeTemplate.push_back(Point(0,5));
+    nodeTemplate.push_back(Point(2,5)); 
+	nodeTemplate.push_back(Point(2,0));
+	int scaleFactor = 1;
+	int newx,newy;
+	vector<Point> nodeScaling;
+	for(int i =0; i < nodeTemplate.size(); i++){
+		newx = nodeTemplate[i].getX() * scaleFactor;
+		newy = nodeTemplate[i].getY() * scaleFactor;
+		nodeScaling.push_back(Point(newx,newy));
+	}
+	
+	Shape cannon(nodeScaling, border);
+	cannon.setFillColor(fill);
+	//setPosition
+	cannon.moveBy(start.getX(),start.getY());
+	return cannon;
+}
+
+void *shootBullet(void *args){
+	int x_peluru = *((int *) args);
+	x_peluru +=30;
+	Shape Bullet = makeBullet(Point(x_peluru, 960), white, z);
+	Bullet.draw();
+	while(Bullet.edges[2].getY()-10>0){
+		usleep(1000);
+		Bullet.moveBy(0, -1);
+	}
+	
+}
+
 Shape makeBaling2 (Point start, Color border, Color fill,int n){
 	vector<Point> nodeTemplate;
 	nodeTemplate.push_back(Point(2,32));
@@ -199,22 +255,74 @@ void *plane_fly(void *args){
     int i;
     Point start;
     start = *((Point *) args);
-	wing = makePlaneWing(start,white,z);
+    
 	front = makePlaneFront(start,white,z);
 	body = makePlaneBody(start,white,z);
 	tail = makePlaneTail(start,white,z);
+	i=0;//counter derajat putaran pesawat
+	int x; //poros putaran pesawat
+	x=210;
+	
+	//gerakan awal rotasi pesawat
+	while (i<=90){
+		front.PlaneParabola(1,Point(x,450));
+		//front.moveBy(10,0);
+		tail.PlaneParabola(1,Point(x,450));
+		//tail.moveBy(10,0);
+		body.PlaneParabola(1,Point(x,450));
+		//body.moveBy(10,0);
+		i++;
+	}
+	x=x+300;
+	i = 0;
+	//gerakan rotasi pesawat
 	while(1){
-		wing.PlaneParabola(-1,Point(200,200));
-		wing.moveBy(10,0);
-		front.PlaneParabola(-1,Point(200,200));
-		front.moveBy(10,0);
-		tail.PlaneParabola(-1,Point(200,200));
-		tail.moveBy(10,0);
-		body.PlaneParabola(-1,Point(200,200));
-		body.moveBy(10,0);
-		usleep(10000);
-    }
+		while (i<=180&&front.edges[0].getX()+240<screen.getWidth()){
+			front.PlaneParabola(-1,Point(x,450));
+			//front.moveBy(10,0);
+			tail.PlaneParabola(-1,Point(x,450));
+			//tail.moveBy(10,0);
+			body.PlaneParabola(-1,Point(x,450));
+			//body.moveBy(10,0);
+			i++;
+		}
+		i=0;
+		x=x+300;
+		while (i<=180&&front.edges[0].getX()+240<screen.getWidth()){
+			front.PlaneParabola(1,Point(x,450));
+			//front.moveBy(10,0);
+			tail.PlaneParabola(1,Point(x,450));
+			//tail.moveBy(10,0);
+			body.PlaneParabola(1,Point(x,450));
+			//body.moveBy(10,0);
+			i++;
+		}
+		i=0;
+		x=x+300;
+		if(front.edges[0].getX()+240>=screen.getWidth()){
+			tail.erase();
+			front.erase();
+			body.erase();
+			start.setPoint(10,550);
+			x=210;
+			front = makePlaneFront(start,white,z);
+			body = makePlaneBody(start,white,z);
+			tail = makePlaneTail(start,white,z);
+			while (i<=90){
+				front.PlaneParabola(1,Point(x,450));
+				//front.moveBy(10,0);
+				tail.PlaneParabola(1,Point(x,450));
+				//tail.moveBy(10,0);
+				body.PlaneParabola(1,Point(x,450));
+				//body.moveBy(10,0);
+				i++;
+			}
+			x=x+300;
+			i = 0;			
+		}
+	}
 }
+
 
 /*void erasePlane (Point start, Color col){
 	int posx = start.getX();

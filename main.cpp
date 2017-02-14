@@ -683,7 +683,6 @@ void *drawPeluru(void *args){
 		}
 		y_peluru--;
     }
-    
 }
 
 void drawCannon(int x){
