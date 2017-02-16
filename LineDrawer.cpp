@@ -131,6 +131,8 @@ void LineDrawer::drawPolyline (vector<Point> P, Color C) {
 }
 
 void LineDrawer::drawPolygon (vector<Point> P, Color C) {
+	if(P.size() <= 0)
+		return;
 	drawBresenhamLine( P[P.size()-1], P[0], C);
 	drawPolyline(P, C);
 }
@@ -222,7 +224,7 @@ void LineDrawer::floodFill4Seed (int x, int y, Color cBorder, Color cNew) {
 		q.pop();
 		x = P.getX();
 		y = P.getY();
-		if (!cBorder.isSame(screen.getColor(y, x)) && !cNew.isSame(screen.getColor(y, x)) && !((x>screen.getWidth() || x<0) || (y>screen.getHeight() || y<0))) {
+		if ( !((x>screen.getWidth() || x<0) || (y>screen.getHeight() || y<0)) && !cBorder.isSame(screen.getColor(y, x)) && !cNew.isSame(screen.getColor(y, x)) ) {
 			screen.setColor(y, x, cNew);
 			q.push(Point(x+1,y));
 			q.push(Point(x-1,y));

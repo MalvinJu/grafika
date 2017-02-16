@@ -4,7 +4,6 @@
 #include "Color.h"
 #include "Screen.h"
 #include <vector>
-
 using namespace std;
 
 

@@ -53,12 +53,14 @@ bool is_inside_polygon(Point P, vector<Point> edges){
 
 
 Point calculate_center( vector<Point>& edge){
+	if(edge.size() <= 0)
+		return Point(0,0);
 	int sumX=0, sumY=0;
 	for(int i=0; i<edge.size(); i++){
 		sumX += edge[i].getX();
 		sumY += edge[i].getY();
 	}
-	return Point(sumX/edge.size() , sumY/edge.size());
+	return Point(sumX/edge.size(), sumY/edge.size());
 }
 
 Point getFloodFillSeed( vector<Point>& edge){
@@ -82,7 +84,9 @@ Point getFloodFillSeed( vector<Point>& edge){
 }
 
 Shape::Shape(){
-	
+	edges.clear();
+	Border = Color(0,0,0);
+	Fill = Color(0,0,0);	
 }
 
 Shape::Shape(vector<Point>& starting_edge, Color C ){
@@ -131,6 +135,7 @@ void Shape::moveBy(int deltaX, int deltaY){
 //rotate the object by theta degree clockwise
 void Shape::Rotate(int theta){
 	erase();
+	center = calculate_center(edges);
 	for(int i=0; i<edges.size(); i++){
 		edges[i].moveBy(-center.getX(), -center.getY());
 		edges[i].rotate(theta);
@@ -145,8 +150,9 @@ void Shape::Rotate(int theta){
 
 
 void Shape::erase(){
-	linedrawer.drawPolygon(edges,Color(0,0,0) );
+	linedrawer.drawPolygon(edges,Border );
 	linedrawer.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Color(0,0,0));
+	linedrawer.drawPolygon(edges,Color(0,0,0) );
 }
 void Shape::draw(){
 	linedrawer.drawPolygon(edges,Border);
