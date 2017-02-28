@@ -1,21 +1,21 @@
-#ifndef __Circle__
-#define __Circle__
+#ifndef __HalfCircle__
+#define __HalfCircle__
 #include "LineDrawer.h"
 #include "Point.h"
 #include <vector>
 #include "AbstractShape.h"
 
 
-class Circle: public AbstractShape{
+class HalfCircle: public AbstractShape{
 
 public:
 
 	//Constructor, 
 	//Point
-	Circle();
-	Circle(Point P, int r, Color c );
+	HalfCircle();
+	HalfCircle(Point P, int r, Color c );
 	//Destructor
-	~Circle();
+	~HalfCircle();
 	
 	//set floodfill color
 	void setFillColor(Color C);
@@ -30,6 +30,7 @@ public:
 
 	//rotate the object by theta degree clockwise
 	void Rotate(int theta);
+
 
 //private:
 	void erase();

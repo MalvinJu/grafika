@@ -131,10 +131,26 @@ void LineDrawer::drawPolyline (vector<Point> P, Color C) {
 }
 
 void LineDrawer::drawPolygon (vector<Point> P, Color C) {
+	if(P.size() <= 0)
+		return;
 	drawBresenhamLine( P[P.size()-1], P[0], C);
 	drawPolyline(P, C);
 }
 
+
+
+void LineDrawer::plot4pixel (Point P, int p, int q, Color C) {
+	//screen.setColor(P.getY()+q, P.getX()+p, C);
+    //screen.setColor(P.getY()+q, P.getX()-p, C);
+    screen.setColor(P.getY()-q, P.getX()+p, C);
+    screen.setColor(P.getY()-q, P.getX()-p, C);
+
+    //screen.setColor(P.getY()+p, P.getX()+q, C);
+    //screen.setColor(P.getY()+p, P.getX()-q, C);
+    screen.setColor(P.getY()-p, P.getX()+q, C);
+    screen.setColor(P.getY()-p, P.getX()-q, C);
+
+}
 
 void LineDrawer::plot8pixel (Point P, int p, int q, Color C) {
 	screen.setColor(P.getY()+q, P.getX()+p, C);
@@ -171,6 +187,32 @@ void LineDrawer::drawCircle (int radius, Point P, Color C) {
     }
 }
 
+void LineDrawer::drawHalfCircle (int radius, Point P, Color C) {
+    int d, p, q;
+
+    p = 0;
+    q = radius;
+    d = 3 - 2*radius;
+
+    plot4pixel(P, p, q, C);
+
+    while (p < q) {
+        p++;
+        if (d<0) {
+            d = d + 2*p + 1;
+        }
+        else {
+            q--;
+            d = d + 2*(p-q) + 1;
+        }
+
+        plot4pixel(P, p, q, C);
+    }
+
+    Point P1(P.getX()-radius, P.getY());
+    Point P2(P.getX()+radius, P.getY());
+    drawBresenhamLine(P1, P2, C);
+}
 
 void LineDrawer::floodFill4Seed (int x, int y, Color cBorder, Color cNew) {
 
@@ -182,7 +224,7 @@ void LineDrawer::floodFill4Seed (int x, int y, Color cBorder, Color cNew) {
 		q.pop();
 		x = P.getX();
 		y = P.getY();
-		if (!cBorder.isSame(screen.getColor(y, x)) && !cNew.isSame(screen.getColor(y, x)) && !((x>screen.getWidth() || x<0) || (y>screen.getHeight() || y<0))) {
+		if ( !((x>screen.getWidth() || x<0) || (y>screen.getHeight() || y<0)) && !cBorder.isSame(screen.getColor(y, x)) && !cNew.isSame(screen.getColor(y, x)) ) {
 			screen.setColor(y, x, cNew);
 			q.push(Point(x+1,y));
 			q.push(Point(x-1,y));

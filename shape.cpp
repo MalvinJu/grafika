@@ -52,19 +52,21 @@ bool is_inside_polygon(Point P, vector<Point> edges){
 }
 
 
-Point calculate_center(vector<Point> edge){
-	long long sumX, sumY;
+Point calculate_center( vector<Point>& edge){
+	if(edge.size() <= 0)
+		return Point(0,0);
+	int sumX=0, sumY=0;
 	for(int i=0; i<edge.size(); i++){
 		sumX += edge[i].getX();
 		sumY += edge[i].getY();
 	}
-	return Point(sumX/edge.size() , sumY/edge.size());
+	return Point(sumX/edge.size(), sumY/edge.size());
 }
 
-Point getFloodFillSeed(vector<Point> edge){
+Point getFloodFillSeed( vector<Point>& edge){
 	int  MaxX = -1,MaxY=-1, MinX=1000000, MinY=1000000;
 	for(int i=0; i<edge.size(); i++){
-		MaxX = max(MaxX , edge[i].getX());
+		MaxX = max(MaxX,edge[i].getX());
 		MaxY = max(MaxY,edge[i].getY());
 		MinX = min(MinX,edge[i].getX());
 		MinY = min(MinY,edge[i].getY());
@@ -81,19 +83,20 @@ Point getFloodFillSeed(vector<Point> edge){
 	return P;
 }
 
-
+Shape::Shape(){
+	edges.clear();
+	Border = Color(0,0,0);
+	Fill = Color(0,0,0);	
+}
 
 Shape::Shape(vector<Point>& starting_edge, Color C ){
-
-
 	edges.clear();
 	edges = starting_edge;
 	Border = C;
+	Fill = Color(0,0,0);
 
 	center = calculate_center(starting_edge);
 	floodfill_seed = getFloodFillSeed(edges);
-
-	draw();
 }
 
 Shape::~Shape(){
@@ -101,6 +104,22 @@ Shape::~Shape(){
 	edges.clear();
 }
 
+Shape::Shape(const Shape &obj){
+	this->floodfill_seed = obj.floodfill_seed;
+	this->edges = obj.edges;
+	this->center = obj.center;
+	this->Border=obj.Border;
+	this->Fill = obj.Fill;
+}
+
+Shape& Shape::operator=(const Shape &obj){
+	this->floodfill_seed = obj.floodfill_seed;
+	this->edges = obj.edges;
+	this->center = obj.center;
+	this->Border=obj.Border;
+	this->Fill = obj.Fill;
+	return *this;
+}
 void Shape::moveBy(int deltaX, int deltaY){
 	erase();
 	for(int i=0; i<edges.size(); i++){
@@ -116,36 +135,68 @@ void Shape::moveBy(int deltaX, int deltaY){
 //rotate the object by theta degree clockwise
 void Shape::Rotate(int theta){
 	erase();
+	center = calculate_center(edges);
 	for(int i=0; i<edges.size(); i++){
 		edges[i].moveBy(-center.getX(), -center.getY());
 		edges[i].rotate(theta);
 		edges[i].moveBy(center.getX(), center.getY());
 
 	}
+	floodfill_seed.moveBy(-center.getX(), -center.getY());
+	floodfill_seed.rotate(theta);
+	floodfill_seed.moveBy(center.getX(), center.getY());
 	draw();
 }
 
 
 void Shape::erase(){
-	linedrawer.drawPolygon(edges,Color(0,0,0) );
+	linedrawer.drawPolygon(edges,Border );
 	linedrawer.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Color(0,0,0));
+	linedrawer.drawPolygon(edges,Color(0,0,0) );
 }
 void Shape::draw(){
 	linedrawer.drawPolygon(edges,Border);
 	linedrawer.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Fill);
-
 }
 
 //set floodfill color
 void Shape::setFillColor(Color C){
+	erase();
 	Fill = C;
+	draw();
 }
 //set Border Color to color c
 void Shape::setBorderColor(Color c){
+	erase();
 	Border = c;
+	draw();
 }
 
 void Shape::setCenter(Point P){
 	center = P;
 }
 
+//tes rotate poros
+void Shape::RotatePoros(int theta, Point poros){
+	erase();
+	for(int i=0; i<edges.size(); i++){
+		//edges[i].moveBy(-center.getX(), -center.getY());
+		edges[i].rotatePoros(theta, poros);
+		//edges[i].moveBy(center.getX(), center.getY());
+
+	}
+	//floodfill_seed.moveBy(-center.getX(), -center.getY());
+	floodfill_seed.rotatePoros(theta, poros);
+	//floodfill_seed.moveBy(center.getX(), center.getY());
+	draw();
+}
+
+//tes pesawat parabola
+void Shape::PlaneParabola(int theta, Point poros){
+	erase();
+	for(int i=0; i<edges.size(); i++){
+		edges[i].rotatePoros(theta, poros);
+	}
+	floodfill_seed.rotatePoros(theta, poros);
+	draw();
+}

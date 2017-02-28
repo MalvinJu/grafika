@@ -4,7 +4,6 @@
 #include "Color.h"
 #include "Screen.h"
 #include <vector>
-
 using namespace std;
 
 
@@ -38,6 +37,9 @@ public:
 	//x,y : starting point
 	//cBorder : closed spaced border color (to determine where to stop)
 	//cNew : what color to fill
+
+
+	void drawHalfCircle (int radius, Point P, Color C);
 	void floodFill4Seed (int x, int y, Color cBorder, Color cNew);
 
 
@@ -45,6 +47,7 @@ private:
 	void plotSlopPositiveLine (Point P1, Point P2, Color C);
 	void plotSlopNegativeLine (Point P1, Point P2, Color C);
 	void plotVerticalLine (Point P1, Point P2, Color C);
+	void plot4pixel (Point P, int p, int q, Color C);
 	void plot8pixel (Point P, int p, int q, Color C);
 
 
